@@ -1,7 +1,7 @@
-const express = require('express')
 const { connectToDatabase } = require('./database/db.database.js');
-require('dotenv').config()
-const app = express();
+const app = require('./app.js');
+require('dotenv').config();
+
 
 const PORT = process.env.PORT
 connectToDatabase().then(()=>{
