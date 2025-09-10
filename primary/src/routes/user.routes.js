@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {handleUserRegistrationRoute,handleUserLoginRoute,handleUserLogoutRoute} = require('../controllers/user.controllers.js');
 
 // user registration route
 router.post('/register',handleUserRegistrationRoute);

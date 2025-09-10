@@ -1,10 +1,5 @@
 const redis = require('redis');
 
-async function connectToRedisDB(){
-
-
-
-
-}
+async function connectToRedisDB(){}
 
 module.exports = connectToRedisDB;

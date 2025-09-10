@@ -1,9 +1,13 @@
+const User = require('../models/user.model.js');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const cookieparser = require('cookie-parser');
+
 async function handleUserRegistrationRoute(request,response){
-    const {firstname,lastname,username,email,password} = request.body;
-    if(!firstname || !lastname || !username || !email || !password){
-        return response.status(400).json({message:'firstName or lastname or username or email or password missing'});
+    const {firstname,lastname,email,password} = request.body;
+    if(!firstname || !lastname || !email || !password){
+        return response.status(400).json({message:'firstName or lastname or email or password missing'});
     }
-    
     const user = await User.findOne({email:email});
     if(user) return response.status(200).json({message:'User already exist'});
 
