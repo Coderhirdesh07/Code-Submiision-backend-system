@@ -15,8 +15,8 @@ function sendToQueue(queue, message) {
       channel.assertQueue(queue, {
         durable: true,
       });
-      channel.sendToQueue(queue, Buffer.from(msg),{
-        persistent: true
+      channel.sendToQueue(queue, Buffer.from(msg), {
+        persistent: true,
       });
       console.log('Sent msg to queue');
 

@@ -1,39 +1,42 @@
 const mongoose = require('mongoose');
-const bcrypt  = require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const userSchema = mongoose.Schema({
-  firstname:{
-    type:String,
-    require:true,
+  firstname: {
+    type: String,
+    require: true,
   },
-  lastname:{
-    type:String,
+  lastname: {
+    type: String,
   },
-  email:{
-    type:String,
-    require:true,
-    unique:true,
+  email: {
+    type: String,
+    require: true,
+    unique: true,
   },
-  password:{
-    type:String,
-    require:true,
+  password: {
+    type: String,
+    require: true,
   },
-  submission:{
-    type:String,
+  submission: {
+    type: String,
   },
 });
 
-async function generateAccessToken(){
-  const accessToken = await jwt.sign({_id:_id,email:email},process.env.ACCESS_TOKEN_SECRET_KEY,{expiresIn:'1d'});
+async function generateAccessToken() {
+  const accessToken = await jwt.sign(
+    { _id: _id, email: email },
+    process.env.ACCESS_TOKEN_SECRET_KEY,
+    { expiresIn: '1d' }
+  );
   return accessToken;
 }
 
-async function comparePassword(password){
-  const isPasswordCorrect = await bcrypt.compare(password,this.password)
+async function comparePassword(password) {
+  const isPasswordCorrect = await bcrypt.compare(password, this.password);
   return isPasswordCorrect;
 }
 
-
-const User = mongoose.model('User',userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;
