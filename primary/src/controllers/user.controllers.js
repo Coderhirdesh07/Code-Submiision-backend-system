@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const cookie = require('cookie-parser');
 
-
 // TODO needed to include logic for redis cache
 
 async function handleUserRegistrationRoute(request, response) {
@@ -22,7 +21,7 @@ async function handleUserRegistrationRoute(request, response) {
     firstname: firstname,
     lastname: lastname,
     email: email,
-    password:encryptPassword,
+    password: encryptPassword,
   });
   return response.status(200).json({ message: 'User registerd successfully' });
 }
@@ -32,15 +31,16 @@ async function handleUserLoginRoute(request, response) {
   if (!email || !password)
     return response.status(400).json({ message: 'email or password invalid' });
 
-  const isEmailExist = await User.findOne({email});
-  if(!isEmailExist) return response.status(400).json({message:'Email does not exist'});
+  const isEmailExist = await User.findOne({ email });
+  if (!isEmailExist)
+    return response.status(400).json({ message: 'Email does not exist' });
 
   const isPasswordCorrect = await bcrypt(password, this, password);
   if (isPasswordCorrect)
     return response.status(400).json({ message: 'Password is incorrect' });
 
   const accessToken = await User.generateAccessToken(email);
-  
+
   return response
     .status(200)
     .cookie('token', accessToken)

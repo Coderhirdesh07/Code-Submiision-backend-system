@@ -1,20 +1,18 @@
-FROM node:23
-
-# Set working directory
+FROM node:23 AS base
 WORKDIR /app
-
-# Copy package.json and package-lock.json (if exists)
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application source code
+
+FROM base AS developement
 COPY . .
+EXPOSE 4000
+CMD [ "npm","run","dev"]
 
-# Expose application port
-EXPOSE 3000
 
-# Start the application
-CMD ["node", "index.js"]
 
+FROM base AS production
+COPY . .
+EXPOSE 4000
+RUN npm prune --production
+CMD ["npm", "run" ,"start"]

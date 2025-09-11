@@ -1,3 +1,4 @@
+const { error } = require('console');
 const { createClient } = require('redis');
 
 let client;
@@ -10,7 +11,7 @@ async function redisConnection() {
   });
 
   client.on(error, () => {
-    console.log('Redis Connection failed');
+    console.error('Redis Connection failed', error);
   });
   await client.connect();
   return client;

@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema({
 
 async function generateAccessToken(email) {
   const accessToken = await jwt.sign(
-    {email: email },
+    { email: email },
     process.env.ACCESS_TOKEN_SECRET_KEY,
     { expiresIn: '1d' }
   );
@@ -38,9 +38,9 @@ async function comparePassword(password) {
   return isPasswordCorrect;
 }
 
-async function hashPassword (password){
-  const hashedPassword = await bcrypt.hash(password,10);
-   return hashedPassword;
+async function hashPassword(password) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  return hashedPassword;
 }
 
 const User = mongoose.model('User', userSchema);

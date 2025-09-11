@@ -27,4 +27,4 @@ function sendToQueue(queue, message) {
   });
 }
 
-module.exports = {sendToQueue};
+module.exports = { sendToQueue };
