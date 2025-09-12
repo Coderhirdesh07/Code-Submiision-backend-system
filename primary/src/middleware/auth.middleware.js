@@ -8,8 +8,8 @@ function verifyJwt(request, response, next) {
       return response
         .status(400)
         .json({ message: 'Missing or Invalid Auth TOken' });
-    const token = authHeader.split('');
 
+    const token = authHeader.split('');
     const decodedToken = jwt.verify(token, Secret_Key);
     return next();
   } catch (error) {

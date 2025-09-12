@@ -1,0 +1,23 @@
+worker-server/
+│
+├── 📁 queue/
+│   ├── consumer.js           # RabbitMQ consumer (reads messages)
+│   └── producer.js           # (Optional) RabbitMQ producer if needed
+│
+├── 📁 jobs/
+│   └── codeProcessor.js      # Logic to handle 'run' or 'submit' types
+│
+├── 📁 services/
+│   ├── executor.js           # Code execution (e.g., Docker-based)
+│   └── database.js           # DB update functions for submissions
+│
+├── 📁 utils/
+│   └── validator.js          # Input/message validation helpers
+│
+├── 📁 config/
+│   └── index.js              # Load & export environment variables, constants
+│
+├── .env                      # RabbitMQ URL, DB credentials, etc.
+├── index.js                  # Entry point — start consumer here
+├── package.json
+└── README.md

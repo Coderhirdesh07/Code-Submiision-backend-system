@@ -1,5 +1,6 @@
 const { sendToQueue } = require('../service/queue.service.js');
 
+const queueName = process.env.QUEUE_NAME;
 function constructData(code, language, problemId, type) {
   return `${problemId} + ":" ${language} + ":"+ ${code} + ":" + ${type}`;
 }
@@ -12,7 +13,7 @@ async function handleProblemRunRoute(request, response) {
 
   const data = constructData(code, language, problemId, 'run');
 
-  const result = await sendToQueue(data);
+  const result = await sendToQueue(queueName,data);
 
   return response.status(200).json({ message: 'Code Execution running ...' });
 }
@@ -25,7 +26,7 @@ async function handleProblemSubmitRoute(request, response) {
 
   const data = constructData(code, language, problemId, 'submit');
 
-  const result = await sendToQueue(data);
+  const result = await sendToQueue(queueName,data);
 
   return response
     .status(200)

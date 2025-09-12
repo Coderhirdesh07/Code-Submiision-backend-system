@@ -10,6 +10,11 @@ const userSchema = mongoose.Schema({
   lastname: {
     type: String,
   },
+  username:{
+    type:String,
+    require:true,
+    unique:true,
+  },
   email: {
     type: String,
     require: true,
@@ -19,14 +24,14 @@ const userSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  submission: {
+  submissions: {
     type: String,
   },
 });
 
 async function generateAccessToken(email) {
   const accessToken = await jwt.sign(
-    { email: email },
+    { email: email,username:username },
     process.env.ACCESS_TOKEN_SECRET_KEY,
     { expiresIn: '1d' }
   );

@@ -1,28 +1,32 @@
 const amqp = require('amqplib/callback_api');
-const { error } = require('console');
 
 function sendToQueue(queue, message) {
-  amqp.connect(process.env.RABBITMQ_URL, function (error0, connection) {
-    if (error0) {
-      console.error('Rabbit MQ Connection failed');
-      return;
+  const QUEUE_URL=process.env.RABBITMQ_URL;
+  amqp.connect(QUEUE_URL,(error,connection)=>{
+    if(error){
+      console.error('RabbitMq could be connected',error.message);
+      return ;
     }
-
-    connection.createChannel(function (error1, channel) {
-      if (error1) {
-        console.error('RabbitMQ channel creation failed');
-      }
-      channel.assertQueue(queue, {
-        durable: true,
-      });
-      channel.sendToQueue(queue, Buffer.from(msg), {
-        persistent: true,
-      });
-      console.log('Sent msg to queue');
-
-      setTimeout(() => {
+    connection.createChannel(function(error0,channel){
+      if(error0){
+        console.error('RabbitMq channel creation failed',error0.message);
         connection.close();
-      }, 500);
+        return;
+      }
+      channel.assertQueue(queue,{
+        durable:true,
+      });
+      //  const payload = typeof message === 'string' ? message : JSON.stringify(message);
+
+      channel.sendToQueue(queue,Buffer.from(message),{
+        persistent:true,
+      });
+
+      console.log(`Sent message to Queue Successful ${queue} : ${message}`);
+      
+      setTimeout(()=>{
+        connection.close();
+      },500);
     });
   });
 }
