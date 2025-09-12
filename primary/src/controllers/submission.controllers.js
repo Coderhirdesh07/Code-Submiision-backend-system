@@ -13,7 +13,7 @@ async function handleProblemRunRoute(request, response) {
 
   const data = constructData(code, language, problemId, 'run');
 
-  const result = await sendToQueue(queueName,data);
+  const result = await sendToQueue(queueName, data);
 
   return response.status(200).json({ message: 'Code Execution running ...' });
 }
@@ -26,11 +26,9 @@ async function handleProblemSubmitRoute(request, response) {
 
   const data = constructData(code, language, problemId, 'submit');
 
-  const result = await sendToQueue(queueName,data);
+  const result = await sendToQueue(queueName, data);
 
-  return response
-    .status(200)
-    .json({ message: 'Code submission in progress ... ' });
+  return response.status(200).json({ message: 'Code submission in progress ... ' });
 }
 
 module.exports = { handleProblemRunRoute, handleProblemSubmitRoute };

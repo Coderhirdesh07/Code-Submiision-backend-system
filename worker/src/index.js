@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
 
-app.listen(3000,()=>{
-    console.log('Worker Server started');
+app.listen(3000, () => {
+  console.log('Worker Server started');
 });

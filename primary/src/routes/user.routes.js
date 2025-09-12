@@ -5,14 +5,14 @@ const {
   handleUserLoginRoute,
   handleUserLogoutRoute,
 } = require('../controllers/user.controllers.js');
-const {verifyJwt} = require('../middleware/auth.middleware.js');
+const { verifyJwt } = require('../middleware/auth.middleware.js');
 
 // user registration route
 router.post('/register', handleUserRegistrationRoute);
 
 // user login and logout route
-router.post('/login', verifyJwt,handleUserLoginRoute);
-router.post('/logout', verifyJwt ,handleUserLogoutRoute);
+router.post('/login', verifyJwt, handleUserLoginRoute);
+router.post('/logout', verifyJwt, handleUserLogoutRoute);
 
 // update info routes
 

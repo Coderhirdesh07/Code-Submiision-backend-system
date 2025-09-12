@@ -32,12 +32,10 @@ async function handleUserLoginRoute(request, response) {
     return response.status(400).json({ message: 'email or password invalid' });
 
   const isEmailExist = await User.findOne({ email });
-  if (!isEmailExist)
-    return response.status(400).json({ message: 'Email does not exist' });
+  if (!isEmailExist) return response.status(400).json({ message: 'Email does not exist' });
 
   const isPasswordCorrect = await bcrypt(password, this, password);
-  if (isPasswordCorrect)
-    return response.status(400).json({ message: 'Password is incorrect' });
+  if (isPasswordCorrect) return response.status(400).json({ message: 'Password is incorrect' });
 
   const accessToken = await User.generateAccessToken(email);
 
@@ -50,10 +48,7 @@ async function handleUserLoginRoute(request, response) {
 async function handleUserLogoutRoute(request, response) {
   // TODO needed to correct it
 
-  return response
-    .status(200)
-    .clearCookie()
-    .json({ message: 'User Logout Successful' });
+  return response.status(200).clearCookie().json({ message: 'User Logout Successful' });
 }
 
 module.exports = {

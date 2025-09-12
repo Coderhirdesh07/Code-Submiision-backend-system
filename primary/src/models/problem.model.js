@@ -6,10 +6,10 @@ const problemSchema = new mongoose.Schema({
     require: true,
     unique: true,
   },
-  description:{
-    type:String,
-    require:true,
-  }
+  description: {
+    type: String,
+    require: true,
+  },
 });
 
 const Problem = mongoose.model('Problem', problemSchema);
