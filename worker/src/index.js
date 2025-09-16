@@ -1,11 +1,14 @@
 const express = require('express');
 const app = express();
-const {connectToDatabase} = require('../src/database/db.database.js');
+const { connectToDatabase } = require('../src/database/db.database.js');
+const { redisConnection } = require('../src/database/redis.database.js');
+require('dotenv').config();
 
+
+redisConnection();
 connectToDatabase().then( () =>{
-   app.listen(3000, () => {
-     console.log('Worker Server started');
+   app.listen(process.env.PORT, () => {
+     console.log('Worker Server started .. ');
    });
   }
-)
-
+);

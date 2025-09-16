@@ -25,7 +25,8 @@ const userSchema = mongoose.Schema({
     require: true,
   },
   submissions: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref:'Submission'
   },
 });
 

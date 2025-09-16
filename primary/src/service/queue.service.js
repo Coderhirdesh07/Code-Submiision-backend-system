@@ -4,19 +4,19 @@ function sendToQueue(queue, message) {
   const QUEUE_URL = process.env.RABBITMQ_URL;
   amqp.connect(QUEUE_URL, (error, connection) => {
     if (error) {
-      console.error('RabbitMq could be connected', error.message);
+      console.error('RabbitMq could not be connected', error.message);
       return;
     }
     connection.createChannel(function (error0, channel) {
       if (error0) {
-        console.error('RabbitMq channel creation failed', error0.message);
+        console.error('RabbitMq channel creation connection failed', error0.message);
         connection.close();
         return;
       }
       channel.assertQueue(queue, {
         durable: true,
       });
-      //  const payload = typeof message === 'string' ? message : JSON.stringify(message);
+    // const payload = typeof message === 'string' ? message : JSON.stringify(message);
 
       channel.sendToQueue(queue, Buffer.from(message), {
         persistent: true,
