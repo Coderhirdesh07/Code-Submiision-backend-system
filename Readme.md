@@ -64,7 +64,8 @@ This project is a modular backend system designed to handle **code execution sub
 ### 🔧 Prerequisites
 
 - Node.js vXX+
-- Redis (for queue and pub/sub)
+- Redis (for pub/sub)
+- RabbitMQ (for Queue)
 - Docker (optional, for code sandboxing)
 
 ### 📥 Clone Repository

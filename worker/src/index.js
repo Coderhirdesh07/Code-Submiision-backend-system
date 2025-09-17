@@ -5,7 +5,7 @@ const { redisConnection } = require('../src/database/redis.database.js');
 require('dotenv').config();
 
 
-redisConnection();
+ redisConnection();
 connectToDatabase().then( () =>{
    app.listen(process.env.PORT, () => {
      console.log('Worker Server started .. ');
