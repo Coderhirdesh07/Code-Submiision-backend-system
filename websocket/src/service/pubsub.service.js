@@ -1,25 +1,25 @@
-const redis = require('redis');
+const { redisConnection } = require('../service/redis.service.js');
 
-// Create a subscriber client
-const subscriber = redis.createClient();
+const subscriber = redisConnection();
 
-// // Create a publisher client
-// const publisher = redis.createClient();
-
-async function run() {
-  // Connect both clients
-    await subscriber.connect();
-  //  await publisher.connect();
-
-  // Subscriber subscribes to 'news' channel
-  await subscriber.subscribe('news', (message) => {
-    console.log(`Received message: ${message}`);
-  });
-
-  // Publisher sends a message to 'news' channel after a delay
-//   setTimeout(async () => {
-//     await publisher.publish('news', 'Hello from Node.js Redis Pub/Sub!');
-//   }, 1000);
+function handleMessageFromChannel(message) {
+  const processedMessage = message;
+  return processedMessage;
 }
 
-run().catch(console.error);
+async function dataSubscribingChannel() {
+  try {
+    await subscriber.connect();
+    // Subscriber subscribes to 'news' channel
+    const subcribingChannel = process.env.REDIS_SUBSCRIBER_NAME;
+
+    await subscriber.subscribe(subcribingChannel, message => {
+      console.log(`Received message from channel`);
+      handleMessageFromChannel(message);
+    });
+  } catch (error) {
+    console.log('Redis Connection failed');
+  }
+}
+
+module.exports = { dataSubscribingChannel };
