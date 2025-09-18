@@ -4,6 +4,7 @@ const app = require('./app.js');
 require('dotenv').config();
 
 const PORT = process.env.PORT;
+
 redisConnection();
 connectToDatabase().then(() => {
   app.listen(PORT, () => {
