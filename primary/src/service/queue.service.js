@@ -16,7 +16,7 @@ function sendToQueue(queue, message) {
       channel.assertQueue(queue, {
         durable: true,
       });
-    // const payload = typeof message === 'string' ? message : JSON.stringify(message);
+      // const payload = typeof message === 'string' ? message : JSON.stringify(message);
 
       channel.sendToQueue(queue, Buffer.from(message), {
         persistent: true,

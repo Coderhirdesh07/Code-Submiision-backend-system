@@ -48,10 +48,10 @@ async function runUserCode(language, code) {
     AttachStderr: true,
     Tty: false,
     HostConfig: {
-      Binds: [`${tempDir}:/app`],  // Mount temp dir inside container
+      Binds: [`${tempDir}:/app`], // Mount temp dir inside container
       AutoRemove: true,
-      Memory: 200 * 1024 * 1024,   // 200MB memory limit
-      NanoCPUs: 500_000_000,       // 0.5 CPU
+      Memory: 200 * 1024 * 1024, // 200MB memory limit
+      NanoCPUs: 500_000_000, // 0.5 CPU
       NetworkMode: 'none',
       WorkingDir: '/app',
     },
@@ -63,7 +63,7 @@ async function runUserCode(language, code) {
   let stdout = '';
   let stderr = '';
 
-  stream.on('data', (chunk) => {
+  stream.on('data', chunk => {
     // Docker multiplexes stdout/stderr, decode it:
     const output = chunk.toString();
     stdout += output;

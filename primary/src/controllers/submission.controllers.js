@@ -16,7 +16,9 @@ async function handleProblemRunRoute(request, response) {
 
   const result = await sendToQueue(queueName, data);
 
-  return response.status(200).json({ message: 'Code Execution running ...',userResult:websocketConnection });
+  return response
+    .status(200)
+    .json({ message: 'Code Execution running ...', userResult: websocketConnection });
 }
 
 async function handleProblemSubmitRoute(request, response) {
@@ -29,7 +31,9 @@ async function handleProblemSubmitRoute(request, response) {
 
   const result = await sendToQueue(queueName, data);
 
-  return response.status(200).json({ message: 'Code submission in progress ... ', userResult:websocketConnection });
+  return response
+    .status(200)
+    .json({ message: 'Code submission in progress ... ', userResult: websocketConnection });
 }
 
 module.exports = { handleProblemRunRoute, handleProblemSubmitRoute };

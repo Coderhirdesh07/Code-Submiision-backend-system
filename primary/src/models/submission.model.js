@@ -4,15 +4,15 @@ const submissionSchema = new mongoose.Schema(
   {
     problemId: {
       type: String,
-      require: true,
+      required: true,
     },
     language: {
       type: String,
-      require: true,
+      required: true,
     },
     code: {
       type: String,
-      require: true,
+      required: true,
     },
     result: {
       type: String,
@@ -24,7 +24,7 @@ const submissionSchema = new mongoose.Schema(
         'Wrong Answer',
         'Pending',
       ],
-      require: true,
+      required: true,
       default: 'Pending',
     },
   },
