@@ -1,91 +1,96 @@
-const User = require('../models/user.model.js');
-const bcrypt = require('bcrypt');
-const cookie = require('cookie-parser');
+const {
+  User,
+  hashPassword,
+  generateAccessToken,
+  comparePassword,
+} = require('../models/user.model.js');
 const { redisConnection } = require('../database/redis.database.js');
-
+const ApiResponse = require('../utils/ApiResponse.js');
+const ApiError = require('../utils/ApiError.js');
+const jwt = require('jsonwebtoken');
 async function handleUserRegistrationRoute(request, response) {
-  const { firstname, lastname, username, email, password } = request.body;
-  if (!firstname || !lastname || !username || !email || !password) {
-    return response
-      .status(400)
-      .json({ message: 'firstName or lastname or username or email or password missing' });
+  const { firstname, lastname, email, password, role } = request.body;
+  if (!firstname || !lastname || !email || !password || !role) {
+    throw new ApiError(400, 'All fields are required', [
+      'firstname,lastname,email,password, role is missing',
+    ]);
   }
   const user = await User.findOne({ email: email });
 
-  if (user) return response.status(200).json({ message: 'User already exist' });
-
-  const encryptPassword = await User.hashPassword(password);
+  if (user) {
+    throw new ApiError(400, 'User  already exist', ['A user with this email already exist']);
+  }
+  const encryptedPassword = await hashPassword(password);
 
   const newUser = new User({
-    firstname: firstname,
-    lastname: lastname,
-    username: username,
-    email: email,
-    password: encryptPassword,
+    firstname,
+    lastname,
+    email,
+    password: encryptedPassword,
+    role: role,
   });
   await newUser.save();
-  return response.status(200).json({ message: 'User registerd successfully' });
+  return response.status(200).json(new ApiResponse(200, newUser, 'User Registration Successfull'));
 }
 
 async function handleUserLoginRoute(request, response) {
   const { email, password } = request.body;
   const redisDb = await redisConnection();
-  if (!email || !password)
-    return response.status(400).json({ message: 'email or password invalid' });
-
-  const isEmailExist = await User.findOne({ email });
-  if (!isEmailExist) return response.status(400).json({ message: 'Email does not exist' });
-
-  const isPasswordCorrect = await bcrypt(password, this.password);
-  if (isPasswordCorrect) return response.status(400).json({ message: 'Password is incorrect' });
-
-  const accessToken = await User.generateAccessToken(email);
-  const constructedKey = `${accessToken} + ":" + ${isPasswordCorrect}`;
-  await redisDb.SET(email, constructedKey);
-  return response
-    .status(200)
-    .cookie('token', accessToken)
-    .json({ message: 'User succesfully login' });
-}
-async function handleUserLoginRoutes(request, response) {
-  const { email, password } = request.body;
-
-  if (!email || !password)
-    return response.status(400).json({ message: 'Email or password missing' });
-  // find email in redis
-  const redisDb = await redisConnection();
-
-  const cachedKey = `user:${email}`;
-  const isEmailSessionExist = await redisDb.GET(cachedKey);
-  let userData;
-  if (isEmailSessionExist) {
-    userData = JSON.parse(isEmailSessionExist);
-    console.log('data cached');
-  } else {
-    userData = await User.findOne({ email: email });
-    if (!userData) return response.status(400).json({ message: 'Email does not exist' });
+  if (!email || !password) {
+    throw new ApiError(400, 'Email or password invalid');
   }
 
-  const isPasswordCorrect = await bcrypt.compare(password, userData.password);
-  if (!isPasswordCorrect) return response.status(400).json({ message: 'Password is invalid' });
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(400, 'User  Does not exist');
+  }
 
-  const token = User.generateAccessToken(email);
+  const isPasswordCorrect = await comparePassword(password, user.password);
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, 'Password is Incorrect ');
+  }
 
-  await redisDb.SET(`user:${email}`, JSON.stringify(user));
+  const accessToken = jwt.sign(
+    {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    },
+    process.env.ACCESS_TOKEN_SECRET_KEY
+  );
 
-  return response.status(200).cookie('token', token).json({ message: 'Login Succesfull' });
+  await redisDb.set(user._id.toString(), accessToken, { Ex: 60 * 60 * 24 });
+
+  return response
+    .status(200)
+    .cookie('token', accessToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    })
+    .json(new ApiResponse(200, user, 'User Logged In Successfully'));
 }
 
 async function handleUserLogoutRoute(request, response) {
-  // TODO needed to correct it
-  const redisDb = redisConnection();
-  const { email } = request.body;
-  await redisDb.DEL(email);
-  return response.status(200).clearCookie().json({ message: 'User Logout Successful' });
+  const redisDb = await redisConnection();
+  const { id } = request.body;
+  await redisDb.del(id);
+  return response
+    .status(200)
+    .clearCookie('token')
+    .json(new ApiResponse(200, null, 'User Logout Success'));
+}
+
+async function handleUserInfo(request, response) {
+  const { id } = request.body;
+  if (!id) throw new ApiError(400, 'Id is not found');
+  const userInfo = await User.findOne({ id });
+  return response.status(200).json(new ApiResponse(200, userInfo, 'User Info found'));
 }
 
 module.exports = {
   handleUserRegistrationRoute,
   handleUserLoginRoute,
   handleUserLogoutRoute,
+  handleUserInfo,
 };

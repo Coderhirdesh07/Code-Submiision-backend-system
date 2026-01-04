@@ -10,11 +10,6 @@ const userSchema = mongoose.Schema({
   lastname: {
     type: String,
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   email: {
     type: String,
     required: true,
@@ -28,26 +23,24 @@ const userSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: 'Submission',
   },
+  role: {
+    type: String,
+    enum: ['ADMIN', 'CONTRIBUTER', 'CANDIDATE'],
+    default: 'CANDIDATE',
+  },
 });
 
-async function generateAccessToken(email) {
-  const accessToken = await jwt.sign(
-    { email: email, username: username },
-    process.env.ACCESS_TOKEN_SECRET_KEY,
-    { expiresIn: '1d' }
-  );
-  return accessToken;
-}
-
-async function comparePassword(password) {
-  const isPasswordCorrect = await bcrypt.compare(password, this.password);
-  return isPasswordCorrect;
-}
-
 async function hashPassword(password) {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return hashedPassword;
+  return await bcrypt.hash(password, 10);
+}
+
+async function comparePassword(password, hashedPassword) {
+  return await bcrypt.compare(password, hashedPassword);
+}
+
+async function generateAccessToken(payload) {
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET_KEY, { expiresIn: '1d' });
 }
 
 const User = mongoose.model('User', userSchema);
-module.exports = User;
+module.exports = { User, generateAccessToken, comparePassword, hashPassword };
