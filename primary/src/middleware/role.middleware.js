@@ -1,8 +1,11 @@
 async function verifyRole(request, response, next) {
-  try {
-  } catch (error) {
-    console.log(error);
+  const { role } = request.user;
+  if (!role) return response.status(400).json({ message: 'Role is missing' });
+
+  if (role === 'ADMIN' || role === 'CONTRIBUTOR') {
+    return next();
   }
+  return response.status(400).json({ message: 'Restricted access' });
 }
 
 module.exports = { verifyRole };

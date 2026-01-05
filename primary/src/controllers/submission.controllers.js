@@ -2,6 +2,7 @@ const { sendToQueue } = require('../service/queue.service.js');
 
 const queueName = process.env.QUEUE_NAME;
 const websocketConnection = process.env.WEBSOCKET_CONNECTION_URL;
+
 function constructData(code, language, problemId, type) {
   return `${problemId} + ":" ${language} + ":"+ ${code} + ":" + ${type}`;
 }

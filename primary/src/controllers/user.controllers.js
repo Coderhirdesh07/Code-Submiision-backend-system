@@ -1,13 +1,9 @@
-const {
-  User,
-  hashPassword,
-  generateAccessToken,
-  comparePassword,
-} = require('../models/user.model.js');
+const { User, hashPassword, comparePassword } = require('../models/user.model.js');
 const { redisConnection } = require('../database/redis.database.js');
 const ApiResponse = require('../utils/ApiResponse.js');
 const ApiError = require('../utils/ApiError.js');
 const jwt = require('jsonwebtoken');
+
 async function handleUserRegistrationRoute(request, response) {
   const { firstname, lastname, email, password, role } = request.body;
   if (!firstname || !lastname || !email || !password || !role) {
@@ -58,8 +54,8 @@ async function handleUserLoginRoute(request, response) {
     },
     process.env.ACCESS_TOKEN_SECRET_KEY
   );
-
-  await redisDb.set(user._id.toString(), accessToken, { Ex: 60 * 60 * 24 });
+  const contruct_key = `${accessToken}:${user.role}:${user.email}`;
+  await redisDb.set(user._id.toString(), contruct_key, { Ex: 60 * 60 * 24 });
 
   return response
     .status(200)
